@@ -1,6 +1,11 @@
-class DatePickerElement extends HTMLElement {
+interface DayCell {
+    element: HTMLElement;
+    date: Date | null;
+    eventHandler: any; // @Cleanup: What type is this?
+}
 
-    private cells: HTMLElement[] = [];
+class DatePickerElement extends HTMLElement {
+    private cells: DayCell[] = [];
     private prevMonthButton: HTMLElement;
     private nextMonthButton: HTMLElement;
 
@@ -40,10 +45,17 @@ class DatePickerElement extends HTMLElement {
             const day_row = document.createElement("tr");
 
             for (let col = 0; col < 7; col++) {
-                const cell = document.createElement("td");
+                const element = document.createElement("td");
+                const date = null;
+                const eventHandler = null;
+                const cell: DayCell = {
+                    element,
+                    date,
+                    eventHandler
+                }
                 this.cells.push(cell);
 
-                day_row.appendChild(cell);
+                day_row.appendChild(cell.element);
             }
             tbody!.appendChild(day_row);
         }
@@ -61,7 +73,8 @@ class DatePickerElement extends HTMLElement {
         const firstDayOfMonth = currentMonthFirstDay.getDay();
         const firstRowStartIndex = (firstDayOfMonth + 6) % 7; // Starts at 0 for sunday.
         for (let i = 0; i < firstRowStartIndex; ++i) {
-            this.cells[i].className = "invisible";
+            this.cells[i].element.className = "invisible";
+            this.cells[i].element.removeEventListener("click", this.cells[i].eventHandler);
         }
 
         const numRemainingRows = Math.ceil((numDaysInMonth - (7 - firstRowStartIndex)) / 7);
@@ -69,13 +82,32 @@ class DatePickerElement extends HTMLElement {
         
         let j = 1;
         for (let i = firstRowStartIndex; i < numDaysInMonth+firstRowStartIndex; i++) {
-            this.cells[i].className = "calendarday";
-            this.cells[i].innerText = `${j++}`;
+            this.cells[i].element.className = "calendarday";
+            this.cells[i].element.innerText = `${j++}`;
+            this.cells[i].date = new Date(currentMonthFirstDay);
+
+            this.cells[i].eventHandler = (event: Event) => this.dispatchDayClickEvent(event, this.cells[i].date!);
+            this.cells[i].element.addEventListener("click", this.cells[i].eventHandler);
+
+            currentMonthFirstDay.setDate(currentMonthFirstDay.getDate() + 1);
         }
 
         for (let i = (numRemainingRows * 7) + numDaysInLastRow; i < 42; i++) {
-            this.cells[i].className = "invisible";
+            this.cells[i].element.className = "invisible";
         }
+    }
+
+    dispatchDayClickEvent(e: Event, date: Date) {
+        const event = new CustomEvent("dayclick", {
+            detail: {
+                day: date.getDate(),
+                month: date.getMonth(),
+                year: date.getFullYear()
+            },
+            bubbles: true,
+            composed: true
+        });
+        this.dispatchEvent(event);
     }
 
     get month() {

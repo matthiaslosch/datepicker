@@ -7,9 +7,14 @@
     </head>
     <body>
         <date-picker id="dp"></date-picker>
+        <p id="p">No day selected.</p>
         <script src="datepicker.js"></script>
         <script>
             const dp = document.getElementById("dp");
+            const p = document.getElementById("p");
+            dp.addEventListener("dayclick", (e) => {
+                p.innerText = `${e.detail.year}/${e.detail.month+1}/${e.detail.day}`;
+            });
         </script>
     </body>
 </html>
