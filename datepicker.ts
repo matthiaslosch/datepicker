@@ -11,6 +11,8 @@ class DatePickerElement extends HTMLElement {
 
     private date: Date = new Date(Date.now());
 
+    private lastClickedCellElement: HTMLElement | null = null;
+
     constructor() {
         super();
 
@@ -86,7 +88,7 @@ class DatePickerElement extends HTMLElement {
             this.cells[i].element.innerText = `${j++}`;
             this.cells[i].date = new Date(currentMonthFirstDay);
 
-            this.cells[i].eventHandler = (event: Event) => this.dispatchDayClickEvent(event, this.cells[i].date!);
+            this.cells[i].eventHandler = (event: Event) => this.handleDayClickEvent(event, this.cells[i]);
             this.cells[i].element.addEventListener("click", this.cells[i].eventHandler);
 
             currentMonthFirstDay.setDate(currentMonthFirstDay.getDate() + 1);
@@ -97,12 +99,17 @@ class DatePickerElement extends HTMLElement {
         }
     }
 
-    dispatchDayClickEvent(e: Event, date: Date) {
+    handleDayClickEvent(e: Event, cell: DayCell) {
+        if (this.lastClickedCellElement !== null) {
+            this.lastClickedCellElement.classList.remove("selected");
+        }
+        cell.element.classList.add("selected");
+        this.lastClickedCellElement = cell.element;
         const event = new CustomEvent("dayclick", {
             detail: {
-                day: date.getDate(),
-                month: date.getMonth(),
-                year: date.getFullYear()
+                day: cell.date!.getDate(),
+                month: cell.date!.getMonth(),
+                year: cell.date!.getFullYear()
             },
             bubbles: true,
             composed: true
@@ -173,6 +180,10 @@ class DatePickerElement extends HTMLElement {
 
                 .calendarday {
                     border: #999 1px solid;
+                }
+
+                .selected {
+                    background-color: #7bafdf;
                 }
             </style>
             <table>
