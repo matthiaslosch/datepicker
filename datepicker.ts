@@ -84,7 +84,7 @@ class DatePickerElement extends HTMLElement {
         
         let j = 1;
         for (let i = firstRowStartIndex; i < numDaysInMonth+firstRowStartIndex; i++) {
-            this.cells[i].element.className = "calendarday";
+            this.cells[i].element.className = "calendarday clickable";
             this.cells[i].element.innerText = `${j++}`;
             this.cells[i].date = new Date(currentMonthFirstDay);
 
@@ -185,13 +185,17 @@ class DatePickerElement extends HTMLElement {
                 .selected {
                     background-color: #7bafdf;
                 }
+
+                .clickable {
+                    cursor: pointer;
+                }
             </style>
             <table>
                 <thead>
                     <tr id="nav-row">
-                        <th id="left-nav" colspan="2">◀</th>
+                        <th id="left-nav" class="clickable" colspan="2">◀</th>
                         <th id="month-year" colspan="3"></th>
-                        <th id="right-nav" colspan="2">▶</th>
+                        <th id="right-nav" class="clickable" colspan="2">▶</th>
                     </tr>
                     <tr>
                         <th>Mon</th>
