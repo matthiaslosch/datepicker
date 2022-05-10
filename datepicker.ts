@@ -110,6 +110,18 @@ class DatePickerElement extends HTMLElement {
         this.dispatchEvent(event);
     }
 
+    dispatchMonthClickEvent(e: Event, date: Date) {
+        const event = new CustomEvent("monthclick", {
+            detail: {
+                month: date.getMonth(),
+                year: date.getFullYear()
+            },
+            bubbles: true,
+            composed: true
+        });
+        this.dispatchEvent(event);
+    }
+
     get month() {
         return this.date.getMonth();
     }
@@ -130,10 +142,12 @@ class DatePickerElement extends HTMLElement {
         this.prevMonthButton.addEventListener("click", e => {
             this.date.setMonth(this.date.getMonth() - 1);
             this.changeMonth();
+            this.dispatchMonthClickEvent(e, this.date);
         });
         this.nextMonthButton.addEventListener("click", e => {
             this.date.setMonth(this.date.getMonth() + 1);
             this.changeMonth();
+            this.dispatchMonthClickEvent(e, this.date);
         });
     }
 

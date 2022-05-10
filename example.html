@@ -7,13 +7,19 @@
     </head>
     <body>
         <date-picker id="dp"></date-picker>
-        <p id="p">No day selected.</p>
+        <p id="p-day">No day selected.</p>
+        <p id="p-month">Month has not changed.</p>
         <script src="datepicker.js"></script>
         <script>
             const dp = document.getElementById("dp");
-            const p = document.getElementById("p");
+            const pDay = document.getElementById("p-day");
+            const pMonth = document.getElementById("p-month");
             dp.addEventListener("dayclick", (e) => {
-                p.innerText = `${e.detail.year}/${e.detail.month+1}/${e.detail.day}`;
+                pDay.innerText = `${e.detail.year}/${e.detail.month+1}/${e.detail.day}`;
+            });
+            dp.addEventListener("monthclick", (e) => {
+                const month = new Date(2000, e.detail.month, 1).toLocaleDateString("default", { month: "long" });
+                pMonth.innerText = `Month changed to ${month}.`;
             });
         </script>
     </body>
