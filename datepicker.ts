@@ -8,6 +8,7 @@ class DatePickerElement extends HTMLElement {
     private cells: DayCell[] = [];
     private prevMonthButton: HTMLElement;
     private nextMonthButton: HTMLElement;
+    private monthYearButton: HTMLElement;
 
     private date: Date = new Date(Date.now());
 
@@ -40,6 +41,7 @@ class DatePickerElement extends HTMLElement {
 
         this.prevMonthButton = this.shadowRoot!.getElementById("left-nav")!;
         this.nextMonthButton = this.shadowRoot!.getElementById("right-nav")!;
+        this.monthYearButton = this.shadowRoot!.getElementById("month-year")!;
 
         const tbody = this.shadowRoot!.getElementById("days");
 
@@ -156,6 +158,11 @@ class DatePickerElement extends HTMLElement {
             this.changeMonth();
             this.dispatchMonthClickEvent(e, this.date);
         });
+        this.monthYearButton.addEventListener("click", e => {
+            this.date = new Date(Date.now());
+            this.changeMonth();
+            this.dispatchMonthClickEvent(e, this.date);
+        });
     }
 
     render() {
@@ -194,7 +201,7 @@ class DatePickerElement extends HTMLElement {
                 <thead>
                     <tr id="nav-row">
                         <th id="left-nav" class="clickable" colspan="2">◀</th>
-                        <th id="month-year" colspan="3"></th>
+                        <th id="month-year" class="clickable" colspan="3"></th>
                         <th id="right-nav" class="clickable" colspan="2">▶</th>
                     </tr>
                     <tr>
