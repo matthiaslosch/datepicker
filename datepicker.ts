@@ -111,7 +111,8 @@ class DatePickerElement extends HTMLElement {
             detail: {
                 day: cell.date!.getDate(),
                 month: cell.date!.getMonth(),
-                year: cell.date!.getFullYear()
+                year: cell.date!.getFullYear(),
+                date: cell.date!
             },
             bubbles: true,
             composed: true
@@ -123,7 +124,8 @@ class DatePickerElement extends HTMLElement {
         const event = new CustomEvent("monthclick", {
             detail: {
                 month: date.getMonth(),
-                year: date.getFullYear()
+                year: date.getFullYear(),
+                date: date
             },
             bubbles: true,
             composed: true
